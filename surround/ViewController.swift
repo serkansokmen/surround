@@ -9,9 +9,11 @@
 import UIKit
 import SpriteKit
 import ARKit
+import Vision
+
 
 class ViewController: UIViewController, ARSKViewDelegate {
-    
+
     @IBOutlet var sceneView: ARSKView!
     
     override func viewDidLoad() {
@@ -24,10 +26,8 @@ class ViewController: UIViewController, ARSKViewDelegate {
         sceneView.showsFPS = true
         sceneView.showsNodeCount = true
         
-        // Load the SKScene from 'Scene.sks'
-        if let scene = SKScene(fileNamed: "Scene") {
-            sceneView.presentScene(scene)
-        }
+        let scene = Scene(size: self.view.frame.size)
+        sceneView.presentScene(scene)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,16 +55,28 @@ class ViewController: UIViewController, ARSKViewDelegate {
     // MARK: - ARSKViewDelegate
     
     func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -> SKNode? {
-        // Create and configure a node for the anchor added to the view's session.
-        let labelNode = SKLabelNode(text: "👾")
+
+        guard let identifier = ARBridge.shared.anchorsToIdentifiers[anchor] else {
+            return nil
+        }
+
+        let labelNode = SKLabelNode(text: identifier)
         labelNode.horizontalAlignmentMode = .center
         labelNode.verticalAlignmentMode = .center
-        return labelNode;
+        labelNode.preferredMaxLayoutWidth = 120
+        labelNode.numberOfLines = 0
+        labelNode.lineBreakMode = .byWordWrapping
+        labelNode.fontName = UIFont.boldSystemFont(ofSize: 12).fontName
+        return labelNode
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
         
+    }
+
+    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
+        print(camera.trackingState)
     }
     
     func sessionWasInterrupted(_ session: ARSession) {
@@ -77,3 +89,4 @@ class ViewController: UIViewController, ARSKViewDelegate {
         
     }
 }
+

@@ -14,6 +14,8 @@
 		E644512B1F3BCF090048BDAA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E64451291F3BCF090048BDAA /* Main.storyboard */; };
 		E644512D1F3BCF090048BDAA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E644512C1F3BCF090048BDAA /* Assets.xcassets */; };
 		E64451301F3BCF090048BDAA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E644512E1F3BCF090048BDAA /* LaunchScreen.storyboard */; };
+		E64451381F3BCF4F0048BDAA /* Inceptionv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E64451371F3BCF4C0048BDAA /* Inceptionv3.mlmodel */; };
+		E6FB5EF61F3BD77200AD4024 /* ARBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6FB5EF51F3BD77200AD4024 /* ARBridge.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		E644512C1F3BCF090048BDAA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E644512F1F3BCF090048BDAA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E64451311F3BCF090048BDAA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E64451371F3BCF4C0048BDAA /* Inceptionv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Inceptionv3.mlmodel; sourceTree = "<group>"; };
+		E6FB5EF51F3BD77200AD4024 /* ARBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARBridge.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,10 +63,12 @@
 			isa = PBXGroup;
 			children = (
 				E64451211F3BCF090048BDAA /* AppDelegate.swift */,
-				E64451231F3BCF090048BDAA /* Scene.sks */,
-				E64451251F3BCF090048BDAA /* Scene.swift */,
 				E64451271F3BCF090048BDAA /* ViewController.swift */,
+				E64451251F3BCF090048BDAA /* Scene.swift */,
+				E64451231F3BCF090048BDAA /* Scene.sks */,
+				E6FB5EF51F3BD77200AD4024 /* ARBridge.swift */,
 				E64451291F3BCF090048BDAA /* Main.storyboard */,
+				E64451371F3BCF4C0048BDAA /* Inceptionv3.mlmodel */,
 				E644512C1F3BCF090048BDAA /* Assets.xcassets */,
 				E644512E1F3BCF090048BDAA /* LaunchScreen.storyboard */,
 				E64451311F3BCF090048BDAA /* Info.plist */,
@@ -143,6 +149,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E64451281F3BCF090048BDAA /* ViewController.swift in Sources */,
+				E64451381F3BCF4F0048BDAA /* Inceptionv3.mlmodel in Sources */,
+				E6FB5EF61F3BD77200AD4024 /* ARBridge.swift in Sources */,
 				E64451261F3BCF090048BDAA /* Scene.swift in Sources */,
 				E64451221F3BCF090048BDAA /* AppDelegate.swift in Sources */,
 			);
