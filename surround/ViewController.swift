@@ -25,8 +25,9 @@ class ViewController: UIViewController, ARSKViewDelegate {
         // Show statistics such as fps and node count
         sceneView.showsFPS = true
         sceneView.showsNodeCount = true
-        
-        let scene = Scene(size: self.view.frame.size)
+
+        guard let model = try? VNCoreMLModel(for: Inceptionv3().model) else { fatalError("Model not found") }
+        let scene = TrackingScene(withModel: model, andSize: self.view.frame.size)
         sceneView.presentScene(scene)
     }
     
@@ -52,8 +53,6 @@ class ViewController: UIViewController, ARSKViewDelegate {
         // Release any cached data, images, etc that aren't in use.
     }
     
-    // MARK: - ARSKViewDelegate
-    
     func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -> SKNode? {
 
         guard let identifier = ARBridge.shared.anchorsToIdentifiers[anchor] else {
@@ -63,7 +62,7 @@ class ViewController: UIViewController, ARSKViewDelegate {
         let labelNode = SKLabelNode(text: identifier)
         labelNode.horizontalAlignmentMode = .center
         labelNode.verticalAlignmentMode = .center
-        labelNode.preferredMaxLayoutWidth = 120
+        labelNode.preferredMaxLayoutWidth = 240
         labelNode.numberOfLines = 0
         labelNode.lineBreakMode = .byWordWrapping
         labelNode.fontName = UIFont.boldSystemFont(ofSize: 12).fontName

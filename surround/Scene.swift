@@ -11,15 +11,40 @@ import ARKit
 import Vision
 
 
-class Scene: SKScene {
+class TrackingScene: SKScene {
 
-    var model: VNCoreMLModel?
-    var handler = VNSequenceRequestHandler()
+    var model: VNCoreMLModel
+    var handler: VNSequenceRequestHandler
+    var requests = [VNRequest]()
+
+    init(withModel model: VNCoreMLModel, andSize size: CGSize) {
+
+        self.model = model
+        self.handler = VNSequenceRequestHandler()
+
+        super.init(size: size)
+
+        let objectsRequest = VNDetectRectanglesRequest(completionHandler: self.handleDetectedRectangles)
+        objectsRequest.minimumSize = 0.1
+        objectsRequest.maximumObservations = 20
+
+        self.requests = [objectsRequest]
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("Not implemented")
+    }
+
+    private func handleDetectedRectangles(request: VNRequest, error: Error?) {
+        DispatchQueue.main.async {
+            let results = request.results as! [VNObservation]
+            print(results)
+            // draw rectangles
+        }
+    }
 
     override func didMove(to view: SKView) {
         // Setup your scene here
-
-        self.model = try? VNCoreMLModel(for: Inceptionv3().model)
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -32,8 +57,7 @@ class Scene: SKScene {
             return
         }
 
-        if let touchLocation = touches.first?.location(in: sceneView),
-            let model = self.model {
+        if let touchLocation = touches.first?.location(in: sceneView) {
 
             // Add to planes
             if let hit = sceneView.hitTest(touchLocation, types: .featurePoint).first,
@@ -43,30 +67,34 @@ class Scene: SKScene {
                 let transform = simd_mul(hit.worldTransform, translation)
 
                 // Add a new anchor to the session
-                let anchor = ARAnchor(transform: transform)
-                let request = VNCoreMLRequest(model: model, completionHandler: { (request, error) in
+//                let anchor = ARAnchor(transform: transform)
+                let classificationRequest = VNCoreMLRequest(model: self.model, completionHandler: { request, error in
+
+                    guard let results = request.results else {
+                        print ("No results")
+                        return
+                    }
+                    let result = results.prefix(through: 4)
+                        .flatMap { $0 as? VNClassificationObservation }
+                        .filter { $0.confidence > 0.3 }
+                        .map { $0.identifier }.joined(separator: ", ")
+                    // Add a new anchor to the session
+                    let anchor = ARAnchor(transform: transform)
+
+                    // Set the identifier
+                    guard result != ARBridge.shared.anchorsToIdentifiers[anchor] else {
+                        return
+                    }
+
                     DispatchQueue.main.async {
-                        //                print(request.results)
-
-                        guard let results = request.results as? [VNClassificationObservation],
-                            let result = results.first else {
-                                print ("No results")
-                                return
-                        }
-
-                        // Add a new anchor to the session
-                        let anchor = ARAnchor(transform: transform)
-
-                        // Set the identifier
-                        guard result.identifier != ARBridge.shared.anchorsToIdentifiers[anchor] else {
-                            return
-                        }
-                        ARBridge.shared.anchorsToIdentifiers[anchor] = result.identifier
                         sceneView.session.add(anchor: anchor)
+                        ARBridge.shared.anchorsToIdentifiers[anchor] = result
                     }
                 })
+                classificationRequest.imageCropAndScaleOption = .centerCrop
+
                 DispatchQueue.global(qos: .background).async {
-                    try? self.handler.perform([request], on: currentFrame.capturedImage)
+                    try? self.handler.perform(self.requests + [classificationRequest], on: currentFrame.capturedImage)
                 }
             }
 
