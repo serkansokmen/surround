@@ -82,13 +82,13 @@ class TrackingScene: SKScene {
                     let anchor = ARAnchor(transform: transform)
 
                     // Set the identifier
-                    guard result != ARBridge.shared.anchorsToIdentifiers[anchor] else {
-                        return
-                    }
+//                    guard result != ARBridge.shared.anchorsToIdentifiers[anchor] else {
+//                        return
+//                    }
 
                     DispatchQueue.main.async {
                         sceneView.session.add(anchor: anchor)
-                        ARBridge.shared.anchorsToIdentifiers[anchor] = result
+//                        ARBridge.shared.anchorsToIdentifiers[anchor] = result
                     }
                 })
                 classificationRequest.imageCropAndScaleOption = .centerCrop
